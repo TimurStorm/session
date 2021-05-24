@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/eel.js"></script>
+    <title>Программа для семестрововой работы от Мазитова Тимура</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    <style>
+        body{
+            font-family: Rubik;
+            background: #50c878;
+        }
+        a{
+            font-family: Rubik;
+        }
+        .column {
+            float: left;
+        }
+        .column.menu{
+            width: 200px;
+            margin: 0px 10px;
+        }
+        .column.canvas{
+            margin-right:10px;
+            width: 400px;
+            height: 500px;
+            border: 2px;
+            border-style: solid;
+            border-color: #3b9459;
+            border-radius: 3px;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        button{
+            font-family: Rubik;
+            background:#50c878;
+            border: 2px;
+            border-style: solid;
+            margin-top: 7px;
+            border-radius: 20px;
+            border-color: #3b9459;
+            width:100px;
+            height: 40px;
+            cursor: pointer;
+        }
+        button:hover{
+            background:#3b9459;
+            color: white;
+        }
+        .delete{
+            border: 0px;
+            height:16px;
+            width:16px;
+        }
+        .delete:hover{
+            background: #50c878;
+        }
+        .gol{
+            font-family: Rubik;
+            color:#177245;
+            font-size: 20px;
+
+        }
+        .gol.s{
+            font-size: 16px;
+        }
+        #overlay {
+            position: fixed; /* Sit on top of the page content */
+            display: none; /* Hidden by default */
+            width: 100%; /* Full width (cover the whole page) */
+            height: 100%; /* Full height (cover the whole page) */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+            z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+        }
+        #new_figure{
+            padding-left:7px;
+            background: #50c878;
+            box-shadow: 0px 0px 10px #000;
+            font-family: Rubik;
+            box-shadow: 0px 0px 10px #000;
+            position: relative;
+            top: 7%;
+            left: 26%;
+            height: 400px;
+            width: 300px;
+            border: 2px;
+            border-style: solid;
+            margin-bottom: 7px;
+            border-radius: 3px;
+            border-color: #50c878;
+        }
+        .dropbtn {
+            background:#f0f2f0;
+            width: 130px;
+        }
+        .dropbtn:hover {
+            background:#f0f2f0;
+            color: #000000;
+        }
+
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 5px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {background-color: #ddd}
+
+        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+        .show {display:block;}
+        .add{
+            position:absolute;
+            margin-right:10px;
+            bottom: 0;
+            right: 0;
+        }
+        input{
+            border-radius:15px;
+            border-color:#3b9459;
+            width:30px;
+        }
+        .ok{
+            height: 30px;
+            width: 30px;
+            border: 2px;
+            border-style: solid;
+            border-radius: 10px;
+            border-color: #3b9459;
+
+        }
+        .point{
+            height:40px;
+        }
+        #point_coord{
+            height:130px;
+            overflow-y: auto;
+
+        }
+        #figures{
+            overflow-y: auto;
+            background:#3b9459;
+            border : 2px;
+            border-radius: 15px;
+            border-color: #4CD068;
+            height: 300px;
+            width: 200px;
+            margin-top:7px;
+        }
+        .figure{
+            background:#50c878;
+            border: 2px;
+            border-radius:15px;
+            border-color: #50c878;
+            margin: 10px;
+            padding: 0px 0px 7px 7px;
+
+        }
+        .check{
+            float: right;
+            padding-top: 18px;
+        }
+        *{
+    font-family: Areal;
+}
+    *{
+    font-family: Areal;
+}
+.b-container{
+    width:200px;
+    height:150px;
+    background-color: #ccc;
+    margin:0px auto;
+    padding:10px;
+    font-size:30px;
+    color: #fff;
+}
+.b-popup{
+    display:none;
+    width:100%;
+    height:100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    top:0px;
+    left:0px;
+}
+.b-popup .b-popup-content{
+    margin:40px auto 0px auto;
+    width:300px;
+    height: 450px;
+    font-family:Rubik;
+    padding:10px;
+    background-color: #50c878;
+    border-radius:5px;
+    box-shadow: 0px 0px 10px #000;
+}
+    </style>
+    <script>
+        var cn = 10;
+        function print_figure(x, y){
+            var canvas=document.getElementById('cnvs');
+            var ctx = canvas.getContext('2d');
+            ctx.lineWidth = 2; // толщина линии
+            ctx.moveTo(x[0], y[0]);
+            for ( let i = 1 ; i < x.length;i++){
+                ctx.lineTo(x[i], y[i]); //рисуем линию
+            }
+            ctx.moveTo(x[x.length], y[0]); //передвигаем перо
+            ctx.lineTo(x[y.length], y[0]); //рисуем линию
+            ctx.stroke();
+        }
+
+
+        function draw_line(x1, y1, x2, y2){
+            var canvas=document.getElementById('cnvs');
+            var ctx = canvas.getContext('2d');
+            ctx.lineWidth = 2; // толщина линии
+            ctx.moveTo(x1*cn + 200, -1*y1*cn + 250); //передвигаем перо
+            ctx.lineTo(x2*cn + 200, -1*y2*cn + 250); //рисуем линию
+            ctx.stroke();
+        }
+        function draw_circle(x,y,r){
+            var canvas=document.getElementById('cnvs');
+            var ctx = canvas.getContext('2d');
+            ctx.lineWidth = 2; // толщина линии
+            ctx.beginPath();
+            ctx.arc(x*cn + 200,-1*y*cn + 250,r*10,0,2*Math.PI);
+            ctx.stroke();
+        }
+        eel.expose(draw_circle);
+        eel.expose(draw_line);
+        function on() {
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function off() {
+            document.getElementById("overlay").style.display = "none";
+        }
+    </script>
+    <script>
+            var figures = ["Многоугольник","Треугольник","Четырёхугольник","Прямоугольник","Круг","Прямая","Ломаная","Трапеция"]
+            function drop() {
+                document.getElementById("myDropdown").classList.toggle("show");
+            }
+
+            // Close the dropdown menu if the user clicks outside of it
+            window.onclick = function(event) {
+              if (!event.target.matches('.dropbtn')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                  var openDropdown = dropdowns[i];
+                  if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                  }
+                }
+              }
+            }
+            function set_button_value(pk){
+                document.getElementById("drbtn").innerHTML = figures[pk];
+            }
+            function spawn_coord(){
+                 let n = document.getElementById("point_count").value;
+                 var d = document.getElementById("point_coord");
+                 let b = document.getElementById("drbtn");
+                 if (document.getElementById("x_0")){
+                    d.innerHTML = "";
+                 }
+                 console.log("peeee " + b.innerHTML);
+                 if (b.innerHTML == "Круг"){
+                    d.innerHTML += `<div class='point'>
+                            <p class="gol s">Радиус</p>
+                            <div style="display: table;">
+                                <div style="display: table-cell;">
+                                    <input id="r" value="0">
+                                </div>
+                            </div></div>`;
+                 }
+                 for (let i = 0; i < n; i++){
+                    d.innerHTML += `<div class='point'>
+                            <p class="gol s">Точка ` + i + `</p>
+                            <div style="display: table;">
+                                <div style="display: table-cell;">
+                                    <a>x:</a>
+                                    <input id="x_`+ i + `" value="0">
+                                </div>
+                                <div style="display: table-cell;">
+                                    <a>y:</a>
+                                    <input id="y_`+ i + `" value="0">
+                                </div>
+                            </div></div>`;         }
+            }
+            function add_fig_to_menu(resp){
+                let length = resp["length"];
+                let space = resp["square"];
+                let pk = resp["id"];
+                let type = resp["name"];
+                let x = resp["x"];
+                let y = resp["y"];
+                let r = resp["r"];
+                let figs = document.getElementById("figures");
+                if (!("square" in resp)){
+                    figs.innerHTML += `
+                    <div class="figure">
+                        <div style="padding-top:5px">
+                            <div class="check" ><input id="ch_`+pk+`" type="checkbox"></div>
+                            <p class="gol s">` + type + `</p>
+                        </div>
+                        <a>x:` + x + `</a><br>
+                        <a>y:` + y + `</a><br>
+                        <a>Периметр: `+ length +` </a><br>
+                        <button class="delete" onclick="del(`+pk+`)"><i class="fa fa-trash-o" aria-hidden="true" style="color: #CB4335"></i></button>
+                    </div>`;
+                }
+                else if (r){
+                    figs.innerHTML += `
+                    <div class="figure">
+                        <div style="padding-top:5px">
+                            <div class="check" ><input id="ch_`+pk+`" type="checkbox"></div>
+                            <p class="gol s">` + type + `</p>
+                        </div>
+                        <a>x:` + x + `</a><br>
+                        <a>y:` + y + `</a><br>
+                        <a>r:` + r + `</a><br>
+                        <a>Периметр: `+ length +` </a><br>
+                        <a>Площадь: `+ space +` </a><br>
+                        <button class="delete" onclick="del(`+pk+`)"><i class="fa fa-trash-o" aria-hidden="true" style="color: #CB4335"></i></button>
+                    </div>`;
+                }
+                else{
+                    space = resp["square"];
+                    figs.innerHTML += `
+                    <div class="figure">
+                        <div style="padding-top:5px">
+                            <div class="check" ><input id="ch_`+pk+`" type="checkbox"></div>
+                            <p class="gol s">` + type + `</p>
+                        </div>
+                        <a>x:` + x + `</a><br>
+                        <a>y:` + y + `</a><br>
+                        <a>Площадь: `+ space +` </a><br>
+                        <a>Периметр: `+ length +` </a><br>
+
+                        <button class="delete" onclick="del(`+pk+`)"><i class="fa fa-trash-o" aria-hidden="true" style="color: #CB4335"></i></button>
+                    </div>`;}
+            }
+            async function add_figure(){
+                let n = document.getElementById("point_count").value;
+                let type = document.getElementById("drbtn").innerHTML;
+                let x = [];
+                let y = [];
+                let r = document.getElementById("r");
+                console.log(r);
+                for (let i=0; i<n; i ++){
+                    x.push(document.getElementById("x_"+i).value);
+                    y.push(document.getElementById("y_"+i).value);
+                }
+                let resp;
+                if (r){
+                    resp = await eel.create_figure(type, x, y, r.value)();
+                }
+                else{
+                    resp = await eel.create_figure(type, x, y)();
+                }
+                console.log(resp);
+                add_fig_to_menu(resp);
+                off();
+            }
+            async function rewrite(){
+                let data = await eel.re_figures()();
+                let num = data.length;
+                console.log(data);
+                if (num != 0){
+                    for (let i = 0; i < num; i++){
+                        add_fig_to_menu(data[i]);
+                    }
+                }
+            }
+            async function del(i){
+                await eel.del_figure(i)();
+                location.reload();
+            }
+            async function peres(){
+                let num = await eel.count_figures()();
+                let mas = [];
+                for( let i = 0; i < num; i++){
+                    let doc = document.getElementById("ch_"+i);
+                    if (doc.checked){
+                        console.log(doc.value);
+                        mas.push(i);
+                    }
+                }
+                if (mas.length == 2){
+                    let resp = await eel.peres_figures(mas[0], mas[1])();
+                    console.log(resp);
+                    if (resp){
+                        swal("Пересекаются!", "Фигуры нашли общую площадь", "success");
+                    }
+                    else{
+                        swal("Не пересекаются!", "Фигуры не нашли общую площадь", "error");
+                    }
+                }
+            }
+            function show(){
+                document.getElementById("peremes").style.display = 'block';
+            }
+            function noshow(){
+                document.getElementById("peremes").style.display = 'none';
+            }
+            async function perem_js(){
+                let x = document.getElementById("pere_x").value;
+                let y = document.getElementById("pere_y").value;
+                let num = await eel.count_figures()();
+                let mas = 0;
+                for( let i = 0; i < num; i++){
+                    let doc = document.getElementById("ch_"+i);
+                    if (doc.checked){
+                        mas = i;
+                    }
+                }
+                await eel.pere_figures(mas, x, y);
+                noshow();
+                location.reload();
+            }
+            async function pow_js(){
+                let phi = document.getElementById("phi").value;
+                let num = await eel.count_figures()();
+                let mas = 0;
+                for( let i = 0; i < num; i++){
+                    let doc = document.getElementById("ch_"+i);
+                    if (doc.checked){
+                        mas = i;
+                    }
+                }
+                await eel.pow_figures(mas, phi);
+                noshow();
+                location.reload();
+            }
+            async function sym_js(){
+                let ax = document.getElementById("ax").value;
+                let num = await eel.count_figures()();
+                let mas = 0;
+                for( let i = 0; i < num; i++){
+                    let doc = document.getElementById("ch_"+i);
+                    if (doc.checked){
+                        mas = i;
+                    }
+                }
+                await eel.sym_figures(mas, ax);
+                noshow();
+                location.reload();
+            }
+            async function alld(){
+                await eel.del_all();
+                location.reload();
+            }
+    </script>
+</head>
+
+<body>
+    <div class="b-popup" id="peremes">
+        <div class="b-popup-content">
+            <div style="float:right;margin-right:20px;"> <button class="delete" onclick="noshow()"><i class="fa fa-times" aria-hidden="true" style="color: #CB4335"></i></button></div>
+            <p class="gol" style="text-align: center">Переместить фигуру:</p>
+            <div><p class="gol s " style="text-align: left">Подвинуть:</p><div class='point'>
+                            <div style="display: table;">
+                                <div style="display: table-cell;">
+                                    <a>x:</a>
+                                    <input id="pere_x" value="0">
+
+                                </div>
+                                <div style="display: table-cell;">
+                                    <a>y:</a>
+                                    <input id="pere_y" value="0">
+                                </div>
+                                </div>
+                            </div>
+                <button onclick="perem_js()">Применить</button>
+            </div>
+            <div><p class="gol s " style="text-align: left">Повернуть:</p>
+                <div style="display: table;">
+                                <div style="display: table-cell;">
+                                    <a>phi:</a>
+                                    <input id="phi" value="0">
+
+                                </div></div>
+                <button onclick="pow_js()">Применить</button>
+            </div>
+            <div><p class="gol s " style="text-align: left">Симметрия:</p>
+                <div style="display: table;">
+                                <div style="display: table-cell;">
+                                    <a>ax:</a>
+                                    <input id="ax" value="0">
+
+                                </div></div>
+                <button onclick="sym_js()">Применить</button>
+            </div>
+        </div>
+    </div>
+    <div id="overlay">
+        <div id = "new_figure">
+            <div>
+                <div style="float:right;margin-right:20px;"> <button class="delete" onclick="off()"><i class="fa fa-times" aria-hidden="true" style="color: #CB4335"></i></button></div>
+                <p class="gol" style="text-align: center">Добавить фигуру:</p>
+                <div>
+                   <div class="dropdown">
+                  <button onclick="drop()" class="dropbtn" id="drbtn">Тип фигуры</button>
+                  <div id="myDropdown" class="dropdown-content">
+                      <div onclick="set_button_value(0)"><a href="#" >Многоугольник</a></div>
+                      <div onclick="set_button_value(1)"><a href="#" >Треугольник</a></div>
+                      <div onclick="set_button_value(2)"><a href="#" >Четырёхугольник</a></div>
+                      <div onclick="set_button_value(3)"><a href="#" >Прямоугольник</a></div>
+                      <div onclick="set_button_value(4)"><a href="#" >Круг</a></div>
+                      <div onclick="set_button_value(5)"><a href="#" >Прямая</a></div>
+                      <div onclick="set_button_value(6)"><a href="#" >Ломаная</a></div>
+                      <div onclick="set_button_value(7)"><a href="#">Трапеция</a></div>
+                  </div>
+                </div>
+                <div style="display: table">
+                    <div style="display: table-cell; margin-left:5px;"><p class="gol s">Введите количество точек:</p></div>
+                    <div style="display: table-cell">
+                            <input id="point_count" value="0">
+                            <button class="ok" onclick="spawn_coord()">OK</button>
+
+                    </div>
+                </div>
+                </div>
+                <div>
+                    <p class="gol s">Введите координаты точек:</p>
+                    <div id="point_coord">
+
+                    </div>
+                </div>
+
+
+                <div><button onclick="add_figure()" class="add">Добавить</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="column canvas" >
+            <div>
+                <canvas width="400" height="500" style="background: white" id="cnvs"></canvas>
+            </div>
+        </div>
+        <div class="column menu" id="cans">
+            <div>
+                <p class="gol" style="text-align: center">Меню:</p>
+            </div>
+            <div>
+                <button onclick="on()" style="width:200px;">Добавить фигуру</button>
+                <button onclick="show()" style="width:200px;">Переместить фигуру</button>
+                <button onclick="peres()" style="width:200px;">Пересечение фигуры</button>
+                <button onclick="alld()" style="width:200px;">Очитстить</button>
+                <div id="figures">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let canvas=document.getElementById('cnvs');
+        let ctx = canvas.getContext('2d');
+        ctx.lineWidth = 2; // толщина линии
+        ctx.moveTo(200, 0); //передвигаем перо
+        ctx.lineTo(200, 500); //рисуем линию
+        ctx.moveTo(0, 250); //передвигаем перо
+        ctx.lineTo(400, 250); //рисуем линию
+        ctx.stroke();
+        rewrite();
+    </script>
+</body>
